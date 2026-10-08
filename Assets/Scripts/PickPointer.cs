@@ -27,7 +27,7 @@ public class PickPointer : MonoBehaviour
     private void Start()
     {
         ApplePicker picker = GameObject.Find("ApplePicker").GetComponent<ApplePicker>();
-        rTransform.localScale = new Vector3(picker.PickRadius, picker.PickRadius);
+        rTransform.localScale = new Vector3(picker.PickRadius * 2, picker.PickRadius * 2);
     }
 
     private void PickGaugeFill(float progress)
