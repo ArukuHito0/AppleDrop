@@ -199,9 +199,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59da4d0394066a54e88efc1a446fc3ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  defaultGravityScale: 0.7
+  defaultGravityScale: 1
   maxHealth: 1
-  currentHealth: 1
 --- !u!58 &6492000690444030812
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -253,7 +252,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 0.7
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

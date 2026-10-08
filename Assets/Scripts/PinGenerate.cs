@@ -11,7 +11,7 @@ public class PinGenerate : MonoBehaviour
 
     private void PinSpawn(Vector3 pos)
     {
-        Instantiate(pinObj, pos, Quaternion.identity);
+        Instantiate(pinObj, pos, Quaternion.identity, this.gameObject.transform);
     }
 
     private void PinSetup()
