@@ -2213,7 +2213,7 @@ GameObject:
   - component: {fileID: 856484980}
   - component: {fileID: 856484979}
   m_Layer: 0
-  m_Name: Gro;und
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
