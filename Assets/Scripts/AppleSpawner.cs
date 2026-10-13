@@ -3,37 +3,55 @@ using UnityEngine;
 
 public class AppleSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject applePrefab;
-    
-    [SerializeField] private float spawnInterbal;
+    [SerializeField] private Apple applePrefab;
+
+    [SerializeField] private int spawnCnt;
 
     [SerializeField] private Vector3 minSpawnPos;
     [SerializeField] private Vector3 maxSpawnPos;
 
-    private IEnumerator SpawnApple()
+    public Apple SpawnApple(Vector3 pos)
     {
-        float lastSpawnTime = 0;
+        return Instantiate(applePrefab, pos, Quaternion.identity);
+    }
 
-        while (true)
+    private void SpawnApples()
+    {
+        for (int i = 0; i < spawnCnt; i++)
         {
-            if (Time.time - lastSpawnTime > spawnInterbal)
-            {
-                var spawnX = Random.Range(minSpawnPos.x, maxSpawnPos.x);
-                var spawnY = Random.Range(minSpawnPos.y, maxSpawnPos.y);
-
-                var spawnPos = new Vector3(spawnX, spawnY);
-
-                Instantiate(applePrefab, spawnPos, Quaternion.identity);
-
-                lastSpawnTime = Time.time;
-            }
-
-            yield return null;
+            var spawnPos = RandomPosition(minSpawnPos, maxSpawnPos);
+            SpawnApple(spawnPos).Initialize(Apple.State.Normal);
         }
+    }
+
+    public static Vector3 RandomPosition(Vector3 min, Vector3 max)
+    {
+        var x = Random.Range(min.x, max.x);
+        var y = Random.Range(min.y, max.y);
+        var z = Random.Range(min.z, max.z);
+
+        var pos = new Vector3(x, y, z);
+
+        return pos;
+    }
+
+    private void HandleAppleHarvested()
+    {
+        if (Apple.IsEmpty()) SpawnApples();
+    }
+
+    private void OnEnable()
+    {
+        Apple.onAppleHarvested += HandleAppleHarvested;
+    }
+
+    private void OnDisable()
+    {
+        Apple.onAppleHarvested -= HandleAppleHarvested;
     }
 
     private void Start()
     {
-        StartCoroutine(SpawnApple());
+        SpawnApples();
     }
 }

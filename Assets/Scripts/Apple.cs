@@ -1,14 +1,40 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Apple : MonoBehaviour
 {
+    public enum State
+    {
+        Normal,
+        Harvested,
+    }
+
     private Rigidbody2D rb;
     private CircleCollider2D circleCollider;
 
     [SerializeField] private float defaultGravityScale = 0.7f;
 
-    [SerializeField] private int maxHealth;
-    private int currentHealth;
+    private float bonusMultiplier = 0;  // ‰ñŽûŽž‚É”{—¦‚É‰ÁŽZ‚·‚é’l
+    public float BonusMultiplier => bonusMultiplier;
+
+    public static event Action onAppleHarvested;
+    public static List<Apple> appleList = new List<Apple>();
+
+    public void Initialize(State state)
+    {
+        switch (state)
+        {
+            case State.Normal:
+                appleList.Add(this);
+                rb.gravityScale = 0.0f;
+                circleCollider.isTrigger = true;
+                break;
+            case State.Harvested:
+                Harvest();
+                break;
+        }
+    }
 
     private void Awake()
     {
@@ -16,25 +42,23 @@ public class Apple : MonoBehaviour
         circleCollider = GetComponent<CircleCollider2D>();
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        rb.gravityScale = 0.0f;
-        circleCollider.isTrigger = true;
-
-        currentHealth = maxHealth;
-    }
-
-    public void TakeDamage(int dmg)
-    {
-        currentHealth -= dmg;
-
-        if (currentHealth <= 0) Harvest();
-    }
-
-    private void Harvest()
+    public void Harvest()
     {
         rb.gravityScale = defaultGravityScale;
         circleCollider.isTrigger = false;
+
+        appleList.Remove(this);
+
+        onAppleHarvested?.Invoke();
+    }
+
+    public void AddBonusMultiplier(float amount)
+    {
+        bonusMultiplier += amount;
+    }
+
+    public static bool IsEmpty()
+    {
+        return appleList.Count == 0;
     }
 }

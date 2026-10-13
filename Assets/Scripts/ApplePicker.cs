@@ -24,7 +24,6 @@ public class ApplePicker : MonoBehaviour
 
     public float PickProgress => pickTimer / pickInterbal;
 
-    [SerializeField] private int pickDamage;
     [SerializeField] private float pickRadius;
     public float PickRadius => pickRadius;
 
@@ -38,12 +37,21 @@ public class ApplePicker : MonoBehaviour
         set
         {
             _mousePos = value;
-            onMousePosChanged?.Invoke(value);
+            onMousePosChanged?.Invoke(_mousePos);
         }
     }
 
+    private AppleSpawner appleSpawner;
+
     public static event Action<float> onPickTimerChanged;
     public static event Action<Vector2> onMousePosChanged;
+
+    [SerializeField] private float cloneOffset = 0.5f;
+
+    private void Awake()
+    {
+        appleSpawner = FindObjectOfType<AppleSpawner>().GetComponent<AppleSpawner>();
+    }
 
     private void Start()
     {
@@ -76,8 +84,17 @@ public class ApplePicker : MonoBehaviour
 
             foreach (var target in targets)
             {
-                if(target.TryGetComponent(out Apple apple))
-                    apple.TakeDamage(pickDamage);
+                if (target.TryGetComponent(out Apple apple))
+                {
+                    apple.Harvest();
+
+                    if (UnityEngine.Random.value <= 0.5f)
+                    {
+                        var minPos = new Vector3(apple.transform.position.x - cloneOffset, apple.transform.position.y - cloneOffset);
+                        var maxPos = new Vector3(apple.transform.position.x + cloneOffset, apple.transform.position.y + cloneOffset);
+                        appleSpawner.SpawnApple(AppleSpawner.RandomPosition(minPos, maxPos)).Initialize(Apple.State.Harvested);
+                    }
+                }
             }
         }
     }
